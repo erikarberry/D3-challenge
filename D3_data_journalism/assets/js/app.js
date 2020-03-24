@@ -18,26 +18,28 @@ var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
 // Create an SVG wrapper, append an SVG group that will hold our chart, and shift the latter by left and top margins.
-var svg = d3
-  .select('.chart')
-  .append('svg')
-  .attr('width', svgWidth)
-  .attr('height', svgHeight)
-  .append('g')
-  .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-var chartGroup = svg.append('g');
+// var svg = d3
+//   .select('.chart')
+//   .append('svg')
+//   .attr('width', svgWidth)
+//   .attr('height', svgHeight)
+//   .append('g')
+//   .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+// var chartGroup = svg.append('g');
 
 // Create an SVG wrapper, append an SVG group that will hold our chart, and shift the latter by left and top margins.
 var svg = d3.select('#scatter')
   .append('svg')
-  .attr('height', height)
-  .attr('width', width)
+  .attr('width', svgWidth)
+  .attr('height', svgHeight)
 //   .attr('height', height + margin.top + margin.bottom)
 //   .attr('width', width + margin.left + margin.right)
 
 // Append a group to the SVG area and shift ('translate') it to the right and to the bottom
 var chartGroup = svg.append("g")
-  .attr("transform", `translate(${margin.left}, ${margin.top})`);
+//   .attr("transform", `translate(${margin.left}, ${margin.top})`);
+  .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
 
 // Append a div to the body to create tooltips, assign it a class
 var tooltip = d3.select("#scatter").append("div").attr("class", "d3-tip").style("opacity", 0);
@@ -69,8 +71,8 @@ d3.csv("assets/data/data.csv").then(function(ACSdata) {
     
     // add x axis
     chartGroup.append("g")
-    // .attr("transform", "translate(0," + height + ")")
-    .attr("transform", `translate(0, ${height})`)
+    .attr("transform", "translate(0," + height + ")")
+    // .attr("transform", `translate(0, ${height})`)
     .call(bottomAxis);
     
 // Create circles
@@ -85,7 +87,7 @@ d3.csv("assets/data/data.csv").then(function(ACSdata) {
         .attr("class", function(data) {
             return "stateCircle" + data.abbr;
         })
-        .attr("fill", "pink")
+        .attr("fill", "blue")
         .attr("opacity", "0.5")
         .on("mouseover", function(data) {
             console.log('tooltip data', data)
