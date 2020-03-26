@@ -1,48 +1,23 @@
-// // Define SVG area dimensions
-// var width = parseInt(d3.select("#scatter")
-//     .style("width"));
-// var height = width * 2/3;
-// // Define the chart's margins as an object
-// var margin = {
-//     top: 20, 
-//     right: 20, 
-//     bottom: 30, 
-//     left: 40,
-// };
-
 // Set up chart
 var svgWidth = 960;
 var svgHeight = 500;
-var margin = {top: 20, right: 40, bottom: 60, left: 100};
+var margin = {top: 15, right: 40, bottom: 60, left: 100};
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
-
-// Create an SVG wrapper, append an SVG group that will hold our chart, and shift the latter by left and top margins.
-// var svg = d3
-//   .select('.chart')
-//   .append('svg')
-//   .attr('width', svgWidth)
-//   .attr('height', svgHeight)
-//   .append('g')
-//   .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-// var chartGroup = svg.append('g');
 
 // Create an SVG wrapper, append an SVG group that will hold our chart, and shift the latter by left and top margins.
 var svg = d3.select('#scatter')
   .append('svg')
   .attr('width', svgWidth)
   .attr('height', svgHeight)
-//   .attr('height', height + margin.top + margin.bottom)
-//   .attr('width', width + margin.left + margin.right)
+  .attr("class", "chart");
 
 // Append a group to the SVG area and shift ('translate') it to the right and to the bottom
 var chartGroup = svg.append("g")
-//   .attr("transform", `translate(${margin.left}, ${margin.top})`);
   .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-
 // Append a div to the body to create tooltips, assign it a class
-var tooltip = d3.select("#scatter").append("div").attr("class", "d3-tip").style("opacity", 0);
+var tooltip = d3.select('#scatter').append("div").attr("class", "d3-tip").style("opacity", 0);
 
 // Load data from data.csv and call the function
 d3.csv("assets/data/data.csv").then(function(ACSdata) {
@@ -50,7 +25,7 @@ d3.csv("assets/data/data.csv").then(function(ACSdata) {
     ACSdata.forEach(function(data) {
         data.healthcare = +data.healthcare;
         data.income = +data.income;
-        data.state = ACSdata.map(data => data.state);
+        // data.state = ACSdata.map(data => data.state);
     });
 
     var xLinearScale = d3.scaleLinear()
@@ -72,23 +47,20 @@ d3.csv("assets/data/data.csv").then(function(ACSdata) {
     // add x axis
     chartGroup.append("g")
     .attr("transform", "translate(0," + height + ")")
-    // .attr("transform", `translate(0, ${height})`)
     .call(bottomAxis);
     
 // Create circles
-    // var circlesGroup = 
-    svg.selectAll("circle")
-        .data(ACSdata)
-        .enter()
+    chartGroup.selectAll("circle")
+        .data(ACSdata).enter()
         .append("circle")
-        .attr("cx",data => xLinearScale(data.healthcare))
-        .attr("cy",data => yLinearScale(data.income))
-        .attr("r", "15")
-        .attr("class", function(data) {
-            return "stateCircle" + data.abbr;
-        })
-        .attr("fill", "blue")
-        .attr("opacity", "0.5")
+            .attr("cx",data => xLinearScale(data.healthcare))
+            .attr("cy",data => yLinearScale(data.income))
+            .attr("r", "15")
+            .attr("class", function(data) {
+                return "stateCircle " + data.abbr;
+            })
+            // .text("class", data => stateCircle(data.abbr))
+            .attr("opacity", "0.5")
         .on("mouseover", function(data) {
             console.log('tooltip data', data)
             tooltip
@@ -105,8 +77,14 @@ d3.csv("assets/data/data.csv").then(function(ACSdata) {
         .on("mouseout", function(data) {
             tooltip.transition()
                 .duration(500)
-                .style("opacity", 0);
+                .style("opacity", 0)
         });
+
+    // chartGroup.selectAll("circle")
+    //     .data(ACSdata).enter()
+    //     .append("text").text(function(data) {
+    //         return data.abbr;
+    //     });
 
 // Create x-axis labels
     chartGroup.append("text")
@@ -120,9 +98,8 @@ d3.csv("assets/data/data.csv").then(function(ACSdata) {
         .attr("transform", "rotate(-90)")
         .attr("y", 0 - margin.left + 40)
         .attr("x", 0 - (height / 2))
-        .attr("dy", "1em")
         .attr("class", "axisText")
-        .attr("text-anchor", "margintop")
+        .attr("text-anchor", "middle")
         .text("Median Household Income");
 
 // Create title
